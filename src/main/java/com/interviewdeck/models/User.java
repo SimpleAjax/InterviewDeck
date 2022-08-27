@@ -1,7 +1,10 @@
 package com.interviewdeck.models;
 
-public class User {
-    String userId;
+import javax.persistence.Entity;
+
+@Entity
+public class User extends BaseModel{
+    String userName;
     Profile userProfile;
     ContentPage contentPage;
 }
