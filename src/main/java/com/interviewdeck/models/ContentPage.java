@@ -1,5 +1,7 @@
 package com.interviewdeck.models;
 
-public class ContentPage extends BaseModel{
+import javax.persistence.Entity;
+
+public class ContentPage{  //extends BaseModel{
 
 }
