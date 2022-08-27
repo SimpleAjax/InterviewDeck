@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 
 @Entity
 public class User extends BaseModel{
-    String userId;
+    String userName;
     Profile userProfile;
     ContentPage contentPage;
 }
