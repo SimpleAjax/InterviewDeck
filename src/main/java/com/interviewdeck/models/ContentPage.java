@@ -1,6 +1,6 @@
 package com.interviewdeck.models;
 
-public class ContentPage {
+public class ContentPage extends BaseModel{
     String pageId;
 
 }

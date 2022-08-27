@@ -1,6 +1,6 @@
 package com.interviewdeck.models;
 
-public class Deck {
+public class Deck extends BaseModel{
     String deckId;
     User user;
     String deckName;
