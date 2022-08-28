@@ -1,6 +1,8 @@
 package com.interviewdeck.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -10,11 +12,13 @@ import javax.persistence.*;
 @Getter
 @Table(name = "DeckUsers")
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class User extends BaseModel{
     @Column(unique = true)
     String userName;
-    @OneToOne
-    Profile userProfile;
+
     @OneToOne
     UserContentPage userContentPage;
+
 }
