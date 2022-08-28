@@ -1,10 +1,20 @@
 package com.interviewdeck.models;
 
-import javax.persistence.Entity;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.*;
 
 //@Entity
-public class User{//} extends BaseModel{
+@Setter
+@Getter
+@Table(name = "DeckUsers")
+@Entity
+public class User extends BaseModel{
+    @Column(unique = true)
     String userName;
+    @OneToOne
     Profile userProfile;
-    ContentPage contentPage;
+    @OneToOne
+    UserContentPage userContentPage;
 }
