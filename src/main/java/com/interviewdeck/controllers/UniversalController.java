@@ -1,11 +1,9 @@
 package com.interviewdeck.controllers;
 
-import com.interviewdeck.dtos.CompanyDTO;
-import com.interviewdeck.dtos.DeckDTO;
-import com.interviewdeck.dtos.LoginDTO;
-import com.interviewdeck.dtos.ProfileCreationDTO;
+import com.interviewdeck.dtos.*;
 import com.interviewdeck.models.*;
 import com.interviewdeck.repository.*;
+import com.interviewdeck.services.SignupService;
 import com.interviewdeck.services.ValidateUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -22,6 +20,9 @@ public class UniversalController {
 
     @Autowired
     ProfileRepository profileRepository;
+
+    @Autowired
+    SignupService signupService;
     @Autowired
     CompanyRepository companyRepository;
 
@@ -48,9 +49,9 @@ public class UniversalController {
 
         UserContentPage contentPage = userContentPageRepository.save(new UserContentPage());
 
-        User amazonUser = userRepository.save(new User("AmazonFanBoy", contentPage));
-        User googleUser = userRepository.save(new User("GoogleFanBoy", contentPage));
-        User rivigoUser = userRepository.save(new User("RivigoFanBoy", contentPage));
+        User amazonUser = userRepository.save(User.getUser("AmazonFanBoy@gmail.com"));
+        User googleUser = userRepository.save(User.getUser("GoogleFanBoy@gmail.com"));
+        User rivigoUser = userRepository.save(User.getUser("RivigoFanBoy@gmail.com"));
 
         deckRepository.save(new Deck(amazonUser, "amazonDeck", amazon, false,
                 "interview review for amazon", "amazon deck desc", new ArrayList<>()));
@@ -78,6 +79,15 @@ public class UniversalController {
         }
         if(ValidateUser.isValidUser(loginDTO)) return "LOGGED IN";
         return "INVALID_USER / FAILED";
+    }
+
+    @PostMapping("/signup")
+    public String signup(@Valid @RequestBody SignUpDTO signUpDTO, BindingResult result){
+
+        if(result.hasErrors()) {
+            return "Found errors";
+        }
+        return signupService.signup(signUpDTO);
     }
 
     @PostMapping("/profile/new")
@@ -124,5 +134,7 @@ public class UniversalController {
        }
        return deckDTOs;
     }
+
+
 
 }
