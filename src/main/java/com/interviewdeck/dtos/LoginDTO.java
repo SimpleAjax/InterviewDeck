@@ -9,10 +9,8 @@ import org.springframework.lang.NonNull;
 public class LoginDTO {
     @NonNull
     String userName;
-
     @NonNull
     String password;
-
     @Override
     public String toString() {
         return "LoginDTO{" +
