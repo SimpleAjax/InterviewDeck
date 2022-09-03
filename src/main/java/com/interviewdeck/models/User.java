@@ -1,5 +1,6 @@
 package com.interviewdeck.models;
 
+import com.interviewdeck.dtos.SignUpDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,8 +18,24 @@ import javax.persistence.*;
 public class User extends BaseModel{
     @Column(unique = true)
     String userName;
-
+    String password;
+    String firstName;
+    String lastname;
+    String salt;
     @OneToOne
     UserContentPage userContentPage;
+
+    public static User ConvertUserDTO(SignUpDTO signUpDTO){
+        User user= new User();
+        user.setUserName(signUpDTO.getUsername());
+        user.setPassword(signUpDTO.getPassword());
+        user.setFirstName(signUpDTO.getFirstName());
+        user.setLastname(signUpDTO.getLastName());
+        return user;
+    }
+
+    public static User getUser( String userName){
+        return new User(userName,"pwd"+userName,"firstname","lastname","salt",new UserContentPage());
+    }
 
 }
