@@ -3,6 +3,7 @@ package com.interviewdeck.controllers;
 import com.interviewdeck.dtos.*;
 import com.interviewdeck.models.*;
 import com.interviewdeck.repository.*;
+import com.interviewdeck.services.RoundService;
 import com.interviewdeck.services.SignupService;
 import com.interviewdeck.services.ValidateUser;
 import com.interviewdeck.utils.Utils;
@@ -166,6 +167,29 @@ public class UniversalController {
         List<Deck> decks =  deckRepository.searchByText(company, text);
         return convertDeckToDTOs(decks);
     }
+    @PutMapping("/deck/{id}")
+    public ResponseEntity<Object> updateDeck(@RequestBody @Valid DeckDTO deckDTO){
+        Optional<Deck> optionalDeck=deckRepository.findById(deckDTO.getId());
+        if(!optionalDeck.isPresent()){
+            return ResponseEntity.notFound().build();
+        }
+        Deck deck=optionalDeck.get();
+        deck.setDeckDescription(deck.getDeckDescription());
+        deck.setRounds(RoundService.deckRoundUpdation(deck,deckDTO.getRounds()));
+        deck.setDeckName(deckDTO.getDeckName());
+        deck.setOwner(deckDTO.getOwner());
+        deck.setInterviewReview(deckDTO.getInterviewReview());
+        deck.setIsAnonymous(deckDTO.getIsAnonymous());
+        deck.setCompany(deckDTO.getCompany());
+        deckRepository.save(deck);
+
+        return ResponseEntity
+                .accepted().build();
+
+    }
+
+
+
 
     private List<DeckDTO> convertDeckToDTOs(List<Deck> decks) {
         List<DeckDTO> deckDTOs = new ArrayList<>();
