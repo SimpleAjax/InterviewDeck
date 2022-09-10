@@ -6,10 +6,13 @@ import com.interviewdeck.repository.*;
 import com.interviewdeck.services.SignupService;
 import com.interviewdeck.services.ValidateUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -20,6 +23,9 @@ public class UniversalController {
 
     @Autowired
     ProfileRepository profileRepository;
+
+    @Autowired
+    RoundRepository roundRepository;
 
     @Autowired
     SignupService signupService;
@@ -82,12 +88,15 @@ public class UniversalController {
     }
 
     @PostMapping("/signup")
-    public String signup(@Valid @RequestBody SignUpDTO signUpDTO, BindingResult result){
+    public ResponseEntity<SignupStatusDTO> signup(@Valid @RequestBody SignUpDTO signUpDTO, BindingResult result){
 
         if(result.hasErrors()) {
-            return "Found errors";
+            //return "Found errors";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+
         }
         return signupService.signup(signUpDTO);
+
     }
 
     @PostMapping("/profile/new")
@@ -133,6 +142,15 @@ public class UniversalController {
            deckDTOs.add(Deck.createDTO(deck));
        }
        return deckDTOs;
+    }
+    @PostMapping("/deck/new")
+    public ResponseEntity<Object> createDeck(@RequestBody @Valid DeckDTO deckDTO){
+        roundRepository.saveAll( deckDTO.getRounds());
+        Deck deck=deckRepository.save(DeckDTO.convertToDeck(deckDTO));
+        return ResponseEntity
+                .created(URI
+                        .create(String.format("/deck/%s", deck.getId()))).body(deck);
+
     }
 
 

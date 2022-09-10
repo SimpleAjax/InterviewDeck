@@ -1,9 +1,6 @@
 package com.interviewdeck.dtos;
 
-import com.interviewdeck.models.Company;
-import com.interviewdeck.models.JobRole;
-import com.interviewdeck.models.Round;
-import com.interviewdeck.models.User;
+import com.interviewdeck.models.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,4 +22,16 @@ public class DeckDTO {
     String interviewReview;
     String deckDescription;
     List<Round> rounds;
+
+    public static Deck convertToDeck(DeckDTO deckDTO){
+        Deck deck=new Deck();
+        deck.setOwner(deckDTO.getOwner());
+        deck.setDeckName(deckDTO.getDeckName());
+        deck.setCompany(deckDTO.getCompany());
+        deck.setIsAnonymous(deckDTO.getIsAnonymous());
+        deck.setInterviewReview(deckDTO.getInterviewReview());
+        deck.setDeckDescription(deckDTO.getDeckDescription());
+        deck.setRounds(deckDTO.getRounds());
+        return deck;
+    }
 }
