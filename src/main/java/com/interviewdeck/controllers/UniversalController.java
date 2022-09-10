@@ -5,6 +5,7 @@ import com.interviewdeck.models.*;
 import com.interviewdeck.repository.*;
 import com.interviewdeck.services.SignupService;
 import com.interviewdeck.services.ValidateUser;
+import com.interviewdeck.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,11 +54,13 @@ public class UniversalController {
         Company google = companyRepository.save(new Company("google"));
         Company rivigo = companyRepository.save(new Company("rivigo"));
 
-        UserContentPage contentPage = userContentPageRepository.save(new UserContentPage());
+        UserContentPage p1 = userContentPageRepository.save(new UserContentPage());
+        UserContentPage p2 = userContentPageRepository.save(new UserContentPage());
+        UserContentPage p3 = userContentPageRepository.save(new UserContentPage());
 
-        User amazonUser = userRepository.save(User.getUser("AmazonFanBoy@gmail.com"));
-        User googleUser = userRepository.save(User.getUser("GoogleFanBoy@gmail.com"));
-        User rivigoUser = userRepository.save(User.getUser("RivigoFanBoy@gmail.com"));
+        User amazonUser = userRepository.save(User.getUser("AmazonFanBoy@gmail.com", p1));
+        User googleUser = userRepository.save(User.getUser("GoogleFanBoy@gmail.com", p2));
+        User rivigoUser = userRepository.save(User.getUser("RivigoFanBoy@gmail.com", p3));
 
         deckRepository.save(new Deck(amazonUser, "amazonDeck", amazon, false,
                 "interview review for amazon", "amazon deck desc", new ArrayList<>()));
@@ -71,12 +74,12 @@ public class UniversalController {
         return "data created successfully";
     }
 
-    @GetMapping("/error")
-    public String error() {
-
-        System.out.println("In the /error");
-        return "error";
-    }
+//    @GetMapping("/error")
+//    public String error() {
+//
+//        System.out.println("In the /error");
+//        return "error";
+//    }
 
     @PostMapping("/login")
     public String login(@Valid @RequestBody LoginDTO loginDTO, BindingResult result) {
@@ -132,17 +135,15 @@ public class UniversalController {
 
     @GetMapping("/deck/{companyId}")
     public List<DeckDTO> getAllDeckOnCriteria(@PathVariable long companyId) {
-        List<DeckDTO> deckDTOs = new ArrayList<>();
         Optional<Company> company = companyRepository.findById(companyId);
         System.out.println("company.isPresent() value is: " + company.isPresent());
-        if(!company.isPresent()) return deckDTOs;
+        if(!company.isPresent()) return new ArrayList<>();
         System.out.println("company we got is for id: " + companyId + "is : " + company.get());
        List<Deck> decks = deckRepository.getByCompany(company.get());
-       for(Deck deck : decks) {
-           deckDTOs.add(Deck.createDTO(deck));
-       }
-       return deckDTOs;
+       return convertDeckToDTOs(decks);
     }
+
+
     @PostMapping("/deck/new")
     public ResponseEntity<Object> createDeck(@RequestBody @Valid DeckDTO deckDTO){
         roundRepository.saveAll( deckDTO.getRounds());
@@ -153,6 +154,24 @@ public class UniversalController {
 
     }
 
+    @GetMapping("/deck/search")
+    public List<DeckDTO> searchDeck(@RequestParam(name = "companyId", required = false) Long companyId,
+                                    @RequestParam(name = "text", required = false) String text) {
+        Company company = null;
+        if(companyId!=null) {
+            Optional<Company> companyOptional = companyRepository.findById(companyId);
+            System.out.println("company.isPresent() value is: " + companyOptional.isPresent());
+            if(companyOptional.isPresent()) company = companyOptional.get();
+        }
+        List<Deck> decks =  deckRepository.searchByText(company, text);
+        return convertDeckToDTOs(decks);
+    }
 
-
+    private List<DeckDTO> convertDeckToDTOs(List<Deck> decks) {
+        List<DeckDTO> deckDTOs = new ArrayList<>();
+        for(Deck deck : decks) {
+            deckDTOs.add(Deck.createDTO(deck));
+        }
+        return deckDTOs;
+    }
 }
