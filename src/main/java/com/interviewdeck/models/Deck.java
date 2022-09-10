@@ -6,10 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.util.List;
 @Entity
 @Getter
@@ -17,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Deck extends BaseModel {
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     User owner;
     String deckName;
     @ManyToOne

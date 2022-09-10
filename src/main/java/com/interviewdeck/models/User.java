@@ -34,8 +34,8 @@ public class User extends BaseModel{
         return user;
     }
 
-    public static User getUser( String userName){
-        return new User(userName,"pwd"+userName,"firstname","lastname","salt",new UserContentPage());
+    public static User getUser(String userName, UserContentPage page){
+        return new User(userName,"pwd"+userName,"firstname","lastname","salt", page);
     }
 
 }
