@@ -8,8 +8,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 @Repository
-public interface DeckRepository extends JpaRepository<Deck, Long> {
+public interface DeckRepository extends JpaRepository<Deck, Long>,CustomDeckRepository {
 
     List<Deck> getByCompany(Company company);
 
+    List<Deck> searchByText(Company company, String text);
 }

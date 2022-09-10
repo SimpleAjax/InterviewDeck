@@ -25,11 +25,4 @@ public class BaseModel {
     @Temporal(TemporalType.TIMESTAMP) // defines what type fo date to be stored in db
     @LastModifiedDate // for auditing listener to identify
     Date modifiedAt;
-    @Override
-    public boolean equals(Object obj){
-        if(obj!=null && obj.getClass()==getClass()){
-            return id==((BaseModel) obj).id;
-        }
-        return false;
-    }
 }
