@@ -17,20 +17,20 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class User extends BaseModel{
     @Column(unique = true)
-    String userName;
+    String username;
     String password;
     String firstName;
-    String lastname;
+    String lastName;
     String salt;
     @OneToOne
     UserContentPage userContentPage;
 
     public static User ConvertUserDTO(SignUpDTO signUpDTO){
         User user= new User();
-        user.setUserName(signUpDTO.getUsername());
+        user.setUsername(signUpDTO.getUsername());
         user.setPassword(signUpDTO.getPassword());
         user.setFirstName(signUpDTO.getFirstName());
-        user.setLastname(signUpDTO.getLastName());
+        user.setLastName(signUpDTO.getLastName());
         return user;
     }
 

@@ -43,6 +43,9 @@ public class UniversalController {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    ValidateUser validateUser;
+
     @GetMapping("/status")
     public String status() {
         System.out.println("In the /status");
@@ -83,12 +86,13 @@ public class UniversalController {
 //    }
 
     @PostMapping("/login")
-    public String login(@Valid @RequestBody LoginDTO loginDTO, BindingResult result) {
+    public ResponseEntity<String> login(@Valid @RequestBody LoginDTO loginDTO, BindingResult result) {
+
         if(result.hasErrors()) {
-            return "Found errors";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        if(ValidateUser.isValidUser(loginDTO)) return "LOGGED IN";
-        return "INVALID_USER / FAILED";
+        if(validateUser.isValidUser(loginDTO)) return ResponseEntity.status(HttpStatus.ACCEPTED).body("Loggedin");
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Username or Password are Incorrect");
     }
 
     @PostMapping("/signup")
