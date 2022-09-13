@@ -2,9 +2,11 @@ package com.interviewdeck.controllers;
 
 import com.interviewdeck.dtos.*;
 import com.interviewdeck.models.*;
+
 import com.interviewdeck.models.jwt.JwtRequest;
 import com.interviewdeck.models.jwt.JwtResponse;
 import com.interviewdeck.repositories.*;
+import com.interviewdeck.services.RoundService;
 import com.interviewdeck.services.SignupService;
 import com.interviewdeck.services.UserService;
 import com.interviewdeck.services.ValidateUser;
@@ -62,8 +64,6 @@ public class UniversalController {
     @Autowired
     private UserService userService;
 
-
-
     @GetMapping("/status")
     public String status() {
         System.out.println("In the /status");
@@ -97,12 +97,13 @@ public class UniversalController {
 
 
     @PostMapping("/login")
-    public String login(@Valid @RequestBody LoginDTO loginDTO, BindingResult result) {
+    public ResponseEntity<String> login(@Valid @RequestBody LoginDTO loginDTO, BindingResult result) {
+
         if(result.hasErrors()) {
-            return "Found errors";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        if(validateUser.isValidUser(loginDTO)) return "LOGGED IN";
-        return "INVALID_USER / FAILED";
+        if(validateUser.isValidUser(loginDTO)) return ResponseEntity.status(HttpStatus.ACCEPTED).body("Loggedin");
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Username or Password are Incorrect");
     }
 
     @PostMapping("/authenticate")
@@ -202,6 +203,26 @@ public class UniversalController {
         }
         List<Deck> decks =  deckRepository.searchByText(company, text);
         return convertDeckToDTOs(decks);
+    }
+    @PutMapping("/deck/{id}")
+    public ResponseEntity<Object> updateDeck(@RequestBody @Valid DeckDTO deckDTO){
+        Optional<Deck> optionalDeck=deckRepository.findById(deckDTO.getId());
+        if(!optionalDeck.isPresent()){
+            return ResponseEntity.notFound().build();
+        }
+        Deck deck=optionalDeck.get();
+        deck.setDeckDescription(deck.getDeckDescription());
+        deck.setRounds(RoundService.deckRoundUpdation(deck,deckDTO.getRounds()));
+        deck.setDeckName(deckDTO.getDeckName());
+        deck.setOwner(deckDTO.getOwner());
+        deck.setInterviewReview(deckDTO.getInterviewReview());
+        deck.setIsAnonymous(deckDTO.getIsAnonymous());
+        deck.setCompany(deckDTO.getCompany());
+        deckRepository.save(deck);
+
+        return ResponseEntity
+                .accepted().build();
+
     }
 
     private List<DeckDTO> convertDeckToDTOs(List<Deck> decks) {

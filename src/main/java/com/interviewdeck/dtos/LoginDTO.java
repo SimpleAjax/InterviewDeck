@@ -8,13 +8,13 @@ import org.springframework.lang.NonNull;
 @Setter
 public class LoginDTO {
     @NonNull
-    String userName;
+    String username;
     @NonNull
     String password;
     @Override
     public String toString() {
         return "LoginDTO{" +
-                "userName='" + userName + '\'' +
+                "userName='" + username + '\'' +
                 ", password='" + password + '\'' +
                 '}';
     }
