@@ -1,7 +1,9 @@
 package com.interviewdeck.services;
 
 import com.interviewdeck.dtos.LoginDTO;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ValidateUser {
     public static boolean isValidUser(LoginDTO loginDTO) {
         // fetch from database for the userName (username and password

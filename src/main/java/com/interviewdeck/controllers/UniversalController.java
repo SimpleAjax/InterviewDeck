@@ -2,16 +2,24 @@ package com.interviewdeck.controllers;
 
 import com.interviewdeck.dtos.*;
 import com.interviewdeck.models.*;
-import com.interviewdeck.repository.*;
+import com.interviewdeck.models.jwt.JwtRequest;
+import com.interviewdeck.models.jwt.JwtResponse;
+import com.interviewdeck.repositories.*;
 import com.interviewdeck.services.SignupService;
+import com.interviewdeck.services.UserService;
 import com.interviewdeck.services.ValidateUser;
-import com.interviewdeck.utils.Utils;
+import com.interviewdeck.utils.JWTUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.ArrayList;
@@ -42,14 +50,28 @@ public class UniversalController {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    ValidateUser validateUser;
+
+    @Autowired
+    private JWTUtility jwtUtility;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private UserService userService;
+
+
+
     @GetMapping("/status")
     public String status() {
         System.out.println("In the /status");
         return "OK";
     }
 
-    @GetMapping("/datainit")
-    public String dataInit() {
+    @PostConstruct
+    public void dataInit() {
         Company amazon = companyRepository.save(new Company("amazon"));
         Company google = companyRepository.save(new Company("google"));
         Company rivigo = companyRepository.save(new Company("rivigo"));
@@ -71,23 +93,38 @@ public class UniversalController {
         deckRepository.save(new Deck(rivigoUser, "rivigoDeck", rivigo, true,
                 "interview review for rivigo", "rivigo deck desc", new ArrayList<>()));
 
-        return "data created successfully";
     }
 
-//    @GetMapping("/error")
-//    public String error() {
-//
-//        System.out.println("In the /error");
-//        return "error";
-//    }
 
     @PostMapping("/login")
     public String login(@Valid @RequestBody LoginDTO loginDTO, BindingResult result) {
         if(result.hasErrors()) {
             return "Found errors";
         }
-        if(ValidateUser.isValidUser(loginDTO)) return "LOGGED IN";
+        if(validateUser.isValidUser(loginDTO)) return "LOGGED IN";
         return "INVALID_USER / FAILED";
+    }
+
+    @PostMapping("/authenticate")
+    public JwtResponse authenticate(@RequestBody JwtRequest jwtRequest) throws Exception{
+        System.out.println("inside authenticate method for autherization");
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            jwtRequest.getUsername(),
+                            jwtRequest.getPassword()
+                    ));
+        } catch (BadCredentialsException e) {
+            throw new Exception("INVALID_CREDENTIALS", e);
+        }
+
+        final UserDetails userDetails
+                = userService.loadUserByUsername(jwtRequest.getUsername());
+
+        final String token =
+                jwtUtility.generateToken(userDetails);
+
+        return new JwtResponse(token);
     }
 
     @PostMapping("/signup")
