@@ -1,4 +1,4 @@
-package com.interviewdeck.repository;
+package com.interviewdeck.repositories;
 
 import com.interviewdeck.models.Profile;
 import org.springframework.data.repository.CrudRepository;

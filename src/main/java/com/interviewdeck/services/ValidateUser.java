@@ -1,21 +1,18 @@
 package com.interviewdeck.services;
 
 import com.interviewdeck.dtos.LoginDTO;
-import com.interviewdeck.models.User;
-import com.interviewdeck.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.interviewdeck.repositories.UserRepository;
 import org.springframework.stereotype.Service;
-
+import com.interviewdeck.models.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 @Service
 public class ValidateUser {
     @Autowired
-     UserRepository userRepository;
+    UserRepository userRepository;
     public boolean isValidUser(LoginDTO loginDTO) {
         // fetch from database for the userName (username and password
-        //System.out.println(loginDTO.toString());
-//        String userName="", password="";
         List<User> users=userRepository.findByUsername(loginDTO.getUsername());
         if(users.size()==0){
             return false;

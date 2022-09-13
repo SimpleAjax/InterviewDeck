@@ -1,8 +1,7 @@
-package com.interviewdeck.repository.impl;
+package com.interviewdeck.repositories.impl;
 
 import com.interviewdeck.models.Company;
-import com.interviewdeck.models.Deck;
-import com.interviewdeck.repository.CustomDeckRepository;
+import com.interviewdeck.repositories.CustomDeckRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

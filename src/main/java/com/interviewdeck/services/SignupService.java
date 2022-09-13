@@ -2,10 +2,8 @@ package com.interviewdeck.services;
 
 import com.interviewdeck.dtos.SignUpDTO;
 import com.interviewdeck.dtos.SignupStatusDTO;
-import com.interviewdeck.models.Profile;
 import com.interviewdeck.models.User;
-import com.interviewdeck.repository.UserRepository;
-import com.sun.net.httpserver.Authenticator;
+import com.interviewdeck.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class SignupService {
@@ -22,6 +19,7 @@ public class SignupService {
 
     public ResponseEntity<SignupStatusDTO> signup(SignUpDTO signUpDTO){
         User user=User.ConvertUserDTO(signUpDTO);
+
         List<User> optionalUser=userRepository.findByUsername(user.getUsername());
         if(optionalUser.size()>0){
             throw new ResponseStatusException(

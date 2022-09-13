@@ -1,11 +1,8 @@
-package com.interviewdeck.repository;
+package com.interviewdeck.repositories;
 
-import com.interviewdeck.models.Company;
 import com.interviewdeck.models.UserContentPage;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface UserContentPageRepository extends CrudRepository<UserContentPage, Long> {

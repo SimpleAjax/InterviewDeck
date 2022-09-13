@@ -2,8 +2,7 @@ package com.interviewdeck.services;
 
 import com.interviewdeck.models.Deck;
 import com.interviewdeck.models.Round;
-import com.interviewdeck.repository.DeckRepository;
-import com.interviewdeck.repository.RoundRepository;
+import com.interviewdeck.repositories.RoundRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
