@@ -7,8 +7,6 @@ import lombok.Setter;
 @Setter
 public class ProfileCreationDTO {
     private String userName;
-    String firstName;
-    String lastName;
     int interviewGiven;
     int mockInterviewsTaken;
     int reputationPoints;
@@ -17,8 +15,6 @@ public class ProfileCreationDTO {
     public String toString() {
         return "ProfileCreationDTO{" +
                 "userName='" + userName + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
                 ", interviewGiven=" + interviewGiven +
                 ", mockInterviewsTaken=" + mockInterviewsTaken +
                 ", reputationPoints=" + reputationPoints +
