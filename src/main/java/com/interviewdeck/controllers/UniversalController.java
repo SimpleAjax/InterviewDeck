@@ -141,10 +141,10 @@ public class UniversalController {
     }
 
     @PostMapping("/profile/new")
-    public String createProfile(@RequestBody @Valid ProfileCreationDTO profileCreationDTO) {
-        Profile profile = Profile.createProfile(profileCreationDTO);
+    public ResponseEntity createProfile(@RequestBody @Valid ProfileCreationDTO profileCreationDTO) {
+        Profile profile = Profile.convertProfileDTO(profileCreationDTO);
         System.out.println("profile saved:\n" + profileRepository.save(profile).toString());
-        return "Profile created successfully for user: " + profileCreationDTO.getUserName();
+        return ResponseEntity.status(HttpStatus.CREATED).body( "Profile created successfully for user: " + profileCreationDTO.getUserName());
     }
 
     @GetMapping("/profile")

@@ -17,17 +17,11 @@ import javax.persistence.*;
 public class Profile extends BaseModel {
     @OneToOne
     User user;
-    @Column(name = "first_name", nullable = false)
-    String firstName;
+    @ManyToOne
+    Company company;
 
-    @Column(name = "last_name")
-    String lastName;
-
-    @Column(name = "company")
-    String company;
-
-    @Column(name = "role")
-    String role;
+    @Column(name = "jobRole")
+    String jobRole;
 
     @Column(name = "profile_pic")
     String picUrl;
@@ -47,10 +41,8 @@ public class Profile extends BaseModel {
     @Override
     public String toString() {
         return "Profile{" +
-                "firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
                 ", company='" + company + '\'' +
-                ", role='" + role + '\'' +
+                ", jobRole='" + jobRole + '\'' +
                 ", picUrl='" + picUrl + '\'' +
                 ", userName='" + userName + '\'' +
                 ", interviewGiven=" + interviewGiven +
@@ -59,12 +51,10 @@ public class Profile extends BaseModel {
                 '}';
     }
 
-    public static Profile createProfile(ProfileCreationDTO dto) {
+    public static Profile convertProfileDTO(ProfileCreationDTO dto) {
         Profile profile = new Profile();
         profile.setInterviewGiven(dto.getInterviewGiven());
         profile.setMockInterviewsTaken(dto.getMockInterviewsTaken());
-        profile.setFirstName(dto.getFirstName());
-        profile.setLastName(dto.getLastName());
         profile.setReputationPoints(dto.getReputationPoints());
         profile.setUserName(dto.getUserName());
         return profile;
